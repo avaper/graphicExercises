@@ -1,0 +1,544 @@
+/aCentimetros
+{
+2 dict begin
+    /pulgadas 72 def
+    /centimetros pulgadas 2.54 div def
+    centimetros dup scale
+    1 centimetros div setlinewidth
+end
+} def
+
+/DibujarEjeCartesiano
+{
+2 dict begin
+
+    /rayas 10 def
+    /alturaRaya 0.125 def
+
+    21 2 div 29.7 2 div translate
+
+    newpath
+        rayas neg 0 moveto
+        0 alturaRaya 2 div neg rmoveto
+        0 alturaRaya rlineto
+        0 alturaRaya 2 div neg rmoveto
+        rayas 2 mul
+        {
+            1 0 rlineto
+            0 alturaRaya 2 div neg rmoveto
+            0 alturaRaya rlineto
+            0 alturaRaya 2 div neg rmoveto
+        } repeat
+
+        0 rayas neg moveto
+        alturaRaya 2 div neg 0 rmoveto
+        alturaRaya 0 rlineto
+        alturaRaya 2 div neg 0 rmoveto
+        rayas 2 mul
+        {
+            0 1 rlineto
+            alturaRaya 2 div neg 0 rmoveto
+            alturaRaya 0 rlineto
+            alturaRaya 2 div neg 0 rmoveto
+        } repeat
+end
+} def
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% EJERCICIO 1                                 %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+/DibujarVector
+{
+    9 dict begin
+        /puntos exch def
+
+        /Px puntos 0 get 0 get def
+        /Py puntos 0 get 1 get def
+        /Qx puntos 1 get 0 get def
+        /Qy puntos 1 get 1 get def
+
+        /angulo
+            Qy Py sub
+            Qx Px sub
+            atan
+        def
+
+        /modulo
+            Qx Px sub dup mul
+            Qy Py sub dup mul
+            add
+            sqrt
+        def
+
+        /largoPunta 0.25 def
+        /altoPunta 0.1 def
+
+        1 0 0 setrgbcolor
+
+        Px Py moveto
+
+        modulo largoPunta sub angulo cos mul
+        modulo largoPunta sub angulo sin mul
+        rlineto
+
+        gsave
+            newpath
+
+                0 0 1 setrgbcolor
+
+                Qx Qy moveto
+                angulo rotate
+
+                largoPunta neg altoPunta 2 div rlineto
+                0 altoPunta neg rlineto
+
+                closepath
+            fill
+        grestore
+    end
+} def
+
+/EJERCICIO1
+{
+    /vectores
+    [
+        [[0 0][2 0]]
+        [[0 0][2 45 cos mul 2 45 sin mul]]
+        [[0 0][0 2]]
+        [[0 0][2 135 cos mul 2 135 sin mul]]
+        [[0 0][-2 0]]
+        [[0 0][2 225 cos mul 2 225 sin mul]]
+        [[0 0][0 -2]]
+        [[0 0][2 315 cos mul 2 315 sin mul]]
+        [[-2 2][2 4]]
+        [[4 1][-1 -6]]
+    ] def
+
+    aCentimetros
+
+    DibujarEjeCartesiano
+    stroke
+
+    vectores
+    {
+        DibujarVector
+    } forall
+
+    stroke
+
+    showpage
+} def
+
+EJERCICIO1
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% EJERCICIO 2                                 %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+/mkgraph
+{
+    load
+    /f exch def
+    16 dict begin
+        /N exch def
+        /x1 exch def
+        /x0 exch def
+
+        /pars exch def
+
+        /h x1 x0 sub N div def
+        /x x0 def
+
+        %/F x f def
+        /F pars aload pop x f def
+
+        /y F 0 get def
+        /s F 1 get def
+        x y moveto
+
+        N
+        {
+            x h 3 div add
+            y h 3 div s mul add
+            /x x h add def
+
+            %/F x f def
+            /F pars aload pop x f def
+
+            /y F 0 get def
+            /s F 1 get def
+            x h 3 div sub
+            y h 3 div s mul sub
+            x y
+            curveto
+        } repeat
+    end
+} def
+
+/EJERCICIO2
+{
+    aCentimetros
+
+    DibujarEjeCartesiano
+    stroke
+
+    /cuartica
+    {
+        1 dict begin
+            /x exch def
+            [
+                x x mul x mul x mul
+                x x mul x mul 4 mul
+            ]
+        end
+    } def
+
+    0.0625 setlinewidth
+    1 0 0 setrgbcolor
+    [] -1 1 8 /cuartica mkgraph
+    stroke
+
+    showpage
+} def
+
+EJERCICIO2
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% EJERCICIO 3                                 %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+/EJERCICIO3
+{
+% a)
+
+    aCentimetros
+
+    DibujarEjeCartesiano
+    stroke
+
+    /polinomica
+    {
+        2 dict begin
+            /x exch def
+            [
+                % x^7 - 3x^5 + 2x^2 - 11
+                x x mul x mul x mul x mul x mul x mul
+                x x mul x mul x mul x mul 3 mul sub
+                x x mul 2 mul add
+                11 sub
+
+                % 7x^6 - 15x^4 + 4x
+                x x mul x mul x mul x mul x mul x mul
+                x x mul x mul x mul 15 mul sub
+                x 4 mul
+                add
+            ]
+        end
+    } def
+
+    0.0625 setlinewidth
+    1 0 0 setrgbcolor
+    [] -5 5 8 /polinomica mkgraph
+    stroke
+
+    showpage
+
+% b)
+
+    aCentimetros
+
+    DibujarEjeCartesiano
+    stroke
+
+    /trigonometrica
+    {
+        1 dict begin
+            % Convcersión de radianes a grados
+            /x exch 180 mul 3.14 div def
+            [
+                % 3 · cos(x)
+                x cos 3 mul
+
+                % -3 · sin(x)
+                x sin 3 neg mul
+            ]
+        end
+    } def
+
+    0.0625 setlinewidth
+    1 0 0 setrgbcolor
+    [] -6.28 6.28 8 /trigonometrica mkgraph
+    stroke
+
+    showpage
+
+% c)
+
+    aCentimetros
+
+    DibujarEjeCartesiano
+    stroke
+
+    /parabola
+    {
+        1 dict begin
+            /x exch def
+            [
+                % x^2
+                x x mul
+
+                % 2x
+                x 2 mul
+            ]
+        end
+    } def
+
+    0.0625 setlinewidth
+    1 0 0 setrgbcolor
+    [] -2 2 8 /parabola mkgraph
+    stroke
+
+    showpage
+
+% d)
+
+    aCentimetros
+
+    DibujarEjeCartesiano
+    stroke
+
+    /hiperbola
+    {
+        1 dict begin
+            /x exch def
+            [
+                % sqrt(1 + x^2)
+                x x mul 1 add sqrt
+
+                % x / sqrt(1 + x^2)
+                x x x mul 1 add sqrt div
+            ]
+        end
+    } def
+
+    0.0625 setlinewidth
+    1 0 0 setrgbcolor
+    [] -2 2 8 /hiperbola mkgraph
+    stroke
+
+    showpage
+
+% e)
+
+    aCentimetros
+
+    DibujarEjeCartesiano
+    stroke
+
+    /agnesi
+    {
+        1 dict begin
+            /x exch def
+            /a exch def
+            [
+                % (a^3)/(x^2)+(a^2)
+                a a mul a mul x x mul a a mul add div
+
+                % (2x(a^3))/((x^2)+(a^2))^2
+                2 x mul a a mul a mul mul x x mul a a mul add x x mul a a mul add mul div
+            ]
+        end
+    } def
+
+    0.0625 setlinewidth
+
+    1 0 0 setrgbcolor
+    [1] -5 5 500 /agnesi mkgraph
+    stroke
+
+    1 0 0 setrgbcolor
+    [2] -5 5 500 /agnesi mkgraph
+    stroke
+
+    1 0 0 setrgbcolor
+    [3] -5 5 500 /agnesi mkgraph
+    stroke
+
+    showpage
+
+% f)
+
+    aCentimetros
+
+    DibujarEjeCartesiano
+    stroke
+
+    /exponencial
+    {
+        2 dict begin
+            /x exch def
+            /e 2.7182 def
+            [
+                % e^(-(x^2)/2)
+                e x x mul 2 div neg exp
+
+                % -xe^(-(x^2)/2)
+                x neg e x x mul 2 div neg exp mul
+            ]
+        end
+    } def
+
+    0.0625 setlinewidth
+    1 0 0 setrgbcolor
+    [] -2 2 8 /exponencial mkgraph
+    stroke
+
+    showpage
+} def
+
+EJERCICIO3
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% EJERCICIO 4                                 %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+/path-display
+{
+    { [ 3 1 roll (moveto) ] == }
+    { [ 3 1 roll (lineto) ] == }
+    { [ 7 1 roll (curveto) ] == }
+    { [ (closepath) ] == }
+    pathforall
+} def
+
+/thereisacurrentpoint
+{
+    false
+    { 3 { pop } repeat true exit }
+    { 3 { pop } repeat true exit }
+    { 7 { pop } repeat true exit }
+    { true exit }
+    pathforall
+} def
+
+/EJERCICIO4
+{
+    aCentimetros
+
+    /Times-Roman findfont
+    3 scalefont
+    setfont
+
+    newpath
+
+        4 15 moveto
+
+        (Ejercicio) false charpath
+        gsave
+            1 0 0 setrgbcolor
+            fill
+        grestore
+        stroke
+
+        15.5 15 moveto
+
+        (4) false charpath
+        gsave
+            0 0 1 setrgbcolor
+            fill
+        grestore
+        stroke
+
+    showpage
+} def
+
+EJERCICIO4
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% EJERCICIO 5                                 %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+/pwd 0.032 def
+
+/pixel
+{
+    2 copy
+    newpath
+        moveto
+        pwd 2 div neg pwd 2 div neg rmoveto
+        pwd 0 rlineto
+        0 pwd rlineto
+        pwd neg 0 rlineto
+        0 pwd neg rlineto
+        closepath
+    fill
+} def
+
+/Sierpinski
+{
+    /N exch def
+    /tam exch def
+
+    /P1 [tam 0] def
+    /P2 [0 0] def
+    /P3 [0 tam] def
+
+    /puntos [P1 P2 P3] def
+
+    % Puntos iniciales
+    tam 0 pixel
+    0 0 pixel
+    0 tam pixel
+
+    % P1
+    0 tam 2 div pixel
+
+    % Semilla para el número aleatorio
+    realtime srand
+
+    /puntoActual [0 tam 2 div] def
+
+    N
+    {
+        /puntoElegido rand 3 mod def
+
+        puntoActual 0 get
+        puntos puntoElegido get 0 get
+        add 2 div
+
+        puntoActual 1 get
+        puntos puntoElegido get 1 get
+        add 2 div
+
+        pixel
+
+        /puntoActual
+            [
+                puntoActual 0 get
+                puntos puntoElegido get 0 get
+                add 2 div
+
+                puntoActual 1 get
+                puntos puntoElegido get 1 get
+                add 2 div
+            ]
+        def
+
+    } repeat
+
+} def
+
+/EJERCICIO5
+{
+    aCentimetros
+
+    1 6 translate
+
+    19 20000 Sierpinski
+    stroke
+
+    showpage
+} def
+
+EJERCICIO5

@@ -1,0 +1,253 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% EJERCICIO 1                                 %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+/aCentimetros
+{
+2 dict begin
+    /pulgadas 72 def
+    /centimetros pulgadas 2.54 div def
+    centimetros dup scale
+    1 centimetros div setlinewidth
+end
+} def
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% EJERCICIO 2                                 %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+/EJERCICIO2
+{
+    /altura 5 2 exp 2.5 2 exp sub sqrt def
+    /xOrig 21 2 div 2.5 sub def
+    /yOrig 29.7 2 div altura 2 div sub def
+
+    aCentimetros
+    0.125 setlinewidth
+
+    xOrig yOrig moveto
+    5 0 rlineto
+    120 rotate
+    5 0 rlineto
+    closepath
+
+    stroke
+
+    showpage
+} def
+
+EJERCICIO2
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% EJERCICIO 3                                 %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+/EJERCICIO3
+{
+    /sen45 45 sin def
+    /cos45 45 cos def
+    /tan45 sen45 cos45 div def
+    /sen270 270 sin def
+    /cos270 270 cos def
+
+    {
+        /tan270 sen270 cos270 div def
+    }
+    stopped /tan270 (Indet) def
+
+    (sen(π/2) = sen(45º) = ) print
+    sen45 (        ) cvs print
+    (\n) print
+
+    (cos(π/2) = cos(45º) = ) print
+    cos45 (        ) cvs print
+    (\n) print
+
+    (tan(π/2) = tan(45º) = ) print
+    tan45 (        ) cvs print
+    (\n) print
+
+    (sen(4π/3) = sen(270º) = ) print
+    sen270 (        ) cvs print
+    (\n) print
+
+    (cos(4π/3) = cos(270º) = ) print
+    cos270 (        ) cvs print
+    (\n) print
+
+    (tan(4π/3) = tan(270º) = ) print
+    tan270 (        ) cvs print
+    (\n) print
+
+} def
+
+EJERCICIO3
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% EJERCICIO 4                                 %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+/EJERCICIO4
+{
+    /seno 0.4 def
+    /coseno 1 seno 2 exp sub sqrt def
+
+    /arcotangente seno coseno atan def
+
+    (El arcoseno de 0.4 es ) print
+    arcotangente (        ) cvs print
+    (\n) print
+
+} def
+
+EJERCICIO4
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% EJERCICIO 5                                 %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+/EJERCICIO5
+{
+    aCentimetros
+
+    /xIrlanda 5 def
+    /yIrlanda 17 def
+    /xSanVicente 5 def
+    /ySanVicente 8 def
+    /ancho 10 def
+    /alto 7 def
+
+    % Bandera de Irlanda
+
+        % Franja Shamrock Green. RGB: (22, 155, 98)
+        0 0.6 0.4 setrgbcolor
+        xIrlanda yIrlanda moveto
+        ancho 3 div 0 rlineto
+        0 alto rlineto
+        90 rotate
+        0 ancho 3 div rlineto
+        270 rotate
+        fill
+
+        % Franja White. RGB: (255, 255, 255)
+        1 1 1 setrgbcolor
+        xIrlanda ancho 3 div add yIrlanda moveto
+        ancho 3 div 0 rlineto
+        0 alto rlineto
+        90 rotate
+        0 ancho 3 div rlineto
+        270 rotate
+        fill
+
+        % Franja Mango Tango. RGB: (255, 136, 62)
+        1 0.5 0.2 setrgbcolor
+        xIrlanda ancho 3 div 2 mul add yIrlanda moveto
+        ancho 3 div 0 rlineto
+        0 alto rlineto
+        90 rotate
+        0 ancho 3 div rlineto
+        270 rotate
+        fill
+
+        % Marco
+        0 0 0 setrgbcolor
+        xIrlanda yIrlanda moveto
+        ancho 0 rlineto
+        0 alto rlineto
+        90 rotate
+        0 ancho rlineto
+        270 rotate
+        closepath
+        stroke
+
+    % Bandera de San Vicente y Las Granadinas
+
+        % Franja True Blue. RGB: (0, 114, 198)
+        0 0.4 0.7 setrgbcolor
+        xSanVicente ySanVicente moveto
+        ancho 4 div 0 rlineto
+        0 alto rlineto
+        90 rotate
+        0 ancho 4 div rlineto
+        270 rotate
+        fill
+
+
+        % Franja Metallic Yellow. RGB: (252, 209, 22)
+        1 0.8 0.1 setrgbcolor
+        xSanVicente ancho 4 div add ySanVicente moveto
+        ancho 2 div 0 rlineto
+        0 alto rlineto
+        90 rotate
+        0 ancho 2 div rlineto
+        270 rotate
+        fill
+
+        % Franja Shamrock Green. RGB: (0, 158, 96)
+        0 0.6 0.4 setrgbcolor
+        xSanVicente ancho 4 div 3 mul add ySanVicente moveto
+        ancho 4 div 0 rlineto
+        0 alto rlineto
+        90 rotate
+        0 ancho 4 div rlineto
+        270 rotate
+        fill
+
+        % Rombos en V Shamrock Green. RGB: (0, 158, 96)
+        0 0.6 0.4 setrgbcolor
+
+        /separacion 0.2 def
+        /longitud 1.5 def
+
+        xSanVicente ancho 2 div add
+        ySanVicente alto 2 div separacion sub add
+        moveto
+
+        300 rotate
+        longitud 0 rlineto
+        300 rotate
+        longitud 0 rlineto
+        240 rotate
+        longitud 0 rlineto
+        240 rotate
+
+        xSanVicente ancho 2 div separacion sub add
+        ySanVicente alto 2 div add
+        moveto
+
+        120 rotate
+        longitud 0 rlineto
+        120 rotate
+        longitud 0 rlineto
+        60 rotate
+        longitud 0 rlineto
+        60 rotate
+
+        xSanVicente ancho 2 div separacion add add
+        ySanVicente alto 2 div add
+        moveto
+
+        60 rotate
+        longitud 0 rlineto
+        240 rotate
+        longitud 0 rlineto
+        300 rotate
+        longitud 0 rlineto
+        120 rotate
+        fill
+
+        % Marco
+        0 0 0 setrgbcolor
+        xSanVicente ySanVicente moveto
+        ancho 0 rlineto
+        0 alto rlineto
+        90 rotate
+        0 ancho rlineto
+        270 rotate
+        closepath
+        stroke
+
+    showpage
+} def
+
+EJERCICIO5

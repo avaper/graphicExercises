@@ -1,0 +1,627 @@
+/aCentimetros
+{
+2 dict begin
+    /pulgadas 72 def
+    /centimetros pulgadas 2.54 div def
+    centimetros dup scale
+    1 centimetros div setlinewidth
+end
+} def
+
+/DibujarEjeCartesiano
+{
+2 dict begin
+
+    /rayas 10 def
+    /alturaRaya 0.125 def
+
+    21 2 div 29.7 2 div translate
+
+    newpath
+        rayas neg 0 moveto
+        0 alturaRaya 2 div neg rmoveto
+        0 alturaRaya rlineto
+        0 alturaRaya 2 div neg rmoveto
+        rayas 2 mul
+        {
+            1 0 rlineto
+            0 alturaRaya 2 div neg rmoveto
+            0 alturaRaya rlineto
+            0 alturaRaya 2 div neg rmoveto
+        } repeat
+
+        0 rayas neg moveto
+        alturaRaya 2 div neg 0 rmoveto
+        alturaRaya 0 rlineto
+        alturaRaya 2 div neg 0 rmoveto
+        rayas 2 mul
+        {
+            0 1 rlineto
+            alturaRaya 2 div neg 0 rmoveto
+            alturaRaya 0 rlineto
+            alturaRaya 2 div neg 0 rmoveto
+        } repeat
+end
+} def
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% EJERCICIO 1                                 %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+/poligon
+{
+8 dict begin
+    /N exch def
+    /D exch def
+    /A 360 N div def
+    /R D 2 div def
+
+    0 R moveto
+
+    N
+    {
+        A sin R mul
+        A cos R mul
+        lineto
+
+        /A A 360 N div add def
+    } repeat
+
+    closepath
+end
+} def
+
+/EJERCICIO1
+{
+    aCentimetros
+
+    0.125 setlinewidth
+
+    % Pentágono
+    5 29.7 2 div translate
+    10 5 poligon
+    stroke
+
+    % Heptágono
+    8 0 translate
+    5 7 poligon
+    stroke
+
+    % Triángulo
+    5 0 translate
+    4 3 poligon
+    stroke
+
+    showpage
+} def
+
+EJERCICIO1
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% EJERCICIO 2                                 %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+/funcion
+{
+load
+    /f exch def
+4 dict begin
+
+    /N exch def
+    /x exch def
+
+    /dx 2 N div def
+
+    x dup f moveto
+    N
+    {
+        /x x dx add def
+        x dup f lineto
+    } repeat
+
+end
+} def
+
+/EJERCICIO2
+{
+    aCentimetros
+
+    DibujarEjeCartesiano
+    stroke
+
+    % x^3 - 4x
+    /f
+    {
+        dup dup mul mul x 4 mul sub
+    } def
+
+    0.0625 setlinewidth
+    1 0 0 setrgbcolor
+    -1 100 /f funcion
+    stroke
+
+    showpage
+
+    aCentimetros
+
+    DibujarEjeCartesiano
+    stroke
+
+    % cos(x)
+    /f
+    {
+        90 mul cos
+    } def
+
+    0.0625 setlinewidth
+    1 0 0 setrgbcolor
+    -1 100 /f funcion
+    stroke
+
+    showpage
+} def
+
+EJERCICIO2
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% EJERCICIO 3                                 %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+/StarPoligon
+{
+16 dict begin
+    /N exch def
+    /D exch def
+    /Paso exch def
+
+    /A 360 N div def
+    /R D 2 div def
+
+    /Vertices N array def
+
+    % Se generan los vértices
+    0 R moveto
+
+    /i 0 def
+    N
+    {
+        Vertices i [A sin R mul A cos R mul] put
+
+        /A A 360 N div add def
+        /i i 1 add def
+
+    } repeat
+
+    % Se unen los vértices
+    Vertices 0 get 0 get Vertices 0 get 1 get moveto
+
+    /i Paso def
+    /cont 1 def
+    N
+    {
+        Vertices i N mod get 0 get
+        Vertices i N mod get 1 get
+        lineto
+
+        /i i Paso add def
+        /cont cont 1 add def
+
+        % Para polígonos de lados pares
+        N 2 mod 0 eq
+        {
+            cont N 2 idiv 1 add eq
+            {
+                closepath
+
+                /i i 1 add def
+                Vertices i N mod get 0 get
+                Vertices i N mod get 1 get
+                moveto
+
+            } if
+        } if
+
+    } repeat
+
+    closepath
+end
+} def
+
+/EJERCICIO3
+{
+    aCentimetros
+
+    0.125 setlinewidth
+
+    % 7 puntas
+    6 29.7 2 div translate
+    3 10 7 StarPoligon
+
+    % 5 puntas
+    7 0 translate
+    2 5 5 StarPoligon
+
+    % 8 puntas
+    5 0 translate
+    2 4 8 StarPoligon
+
+    stroke
+
+    showpage
+} def
+
+EJERCICIO3
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% EJERCICIO 4                                 %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+/DibujarPoligono
+{
+8 dict begin
+    /Vertices exch def
+
+    Vertices length 1 gt
+    {
+        Vertices 0 get 0 get
+        Vertices 0 get 1 get
+        moveto
+
+        /i 0 def
+        Vertices length
+        {
+            Vertices i get 0 get
+            Vertices i get 1 get
+            lineto
+
+            /i i 1 add def
+        } repeat
+
+        closepath
+    } if
+end
+} def
+
+/EJERCICIO4
+{
+    aCentimetros
+
+    0.125 setlinewidth
+
+    % Pentágono
+    5 29.7 2 div translate
+    [
+        [1 0]
+        [72 cos 72 sin]
+        [144 cos 144 sin]
+        [216 cos 216 sin]
+        [288 cos 288 sin]
+    ]
+    DibujarPoligono
+
+    % Cuadrado
+    5 0 translate
+    [
+        [0 0]
+        [1 0]
+        [1 1]
+        [0 1]
+    ]
+    DibujarPoligono
+
+    % Triángulo
+    5 0 translate
+    [
+        [0 0]
+        [1 0]
+        [1 1]
+    ]
+    DibujarPoligono
+
+    stroke
+
+    showpage
+} def
+
+EJERCICIO4
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% EJERCICIO 5                                 %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+/EJERCICIO5
+{
+    /ancho 12 def
+    /alto 8 def
+
+    aCentimetros
+
+% UE
+
+    % Cuadrado
+
+    /posX 5 def
+    /posY 19 def
+
+    gsave
+        posX posY translate
+
+        % Dark Powder Blue. RGB: (0, 51, 153)
+        0 0.2 0.6 setrgbcolor
+
+        [
+            [0 0]
+            [ancho 0]
+            [ancho alto]
+            [0 alto]
+        ]
+        DibujarPoligono
+        fill
+    grestore
+
+    % Estrellas
+
+    /n 12 def
+    /a 360 n div def
+    /r 2.5 def
+
+    % Tangerine Yellow. RGB: (255, 204, 0)
+    1 0.8 0 setrgbcolor
+
+    11 23 translate
+
+    n
+    {
+        gsave
+        newpath
+
+            /a a 360 n div add def
+            a cos r mul a sin r mul translate
+
+            2 0.75 5 StarPoligon
+        fill
+        grestore
+    } repeat
+
+% Alaska
+
+    % Cuadrado
+
+    /posX -6 def
+    /posY -20 def
+
+    gsave
+        posX posY translate
+
+        % Oxford Blue. RGB: (15, 32, 75)
+        0.05 0.12 0.3 setrgbcolor
+
+        [
+            [0 0]
+            [ancho 0]
+            [ancho alto]
+            [0 alto]
+        ]
+        DibujarPoligono
+        fill
+    grestore
+
+    % Estrellas
+
+    % Spanish Yellow. RGB: (255, 182, 18)
+    1 0.7 0.1 setrgbcolor
+
+    posX posY translate
+
+    /OsaMenor
+    [
+        [1.95 5.11]
+        [1.42 -0.54]
+        [0.7 -0.74]
+        [0.72 -0.79]
+        [-0.1 -1.1]
+        [1.6 -0.52]
+        [0.63 0.89]
+    ] def
+
+    OsaMenor
+    {
+        /v exch def
+
+        v 0 get v 1 get translate
+        2 0.25 5 StarPoligon
+    } forall
+
+    2.92 4.62 translate
+    2 0.5 5 StarPoligon
+    fill
+
+    showpage
+
+} def
+
+EJERCICIO5
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% EJERCICIO 6                                 %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+/evaluate2d {
+    aload pop  % x y A B C
+    5 1 roll   % C x y A B
+    3 2 roll   % C x A B y
+    mul        % C x A By
+    3 1 roll   % C By x A
+    mul        % C By Ax
+    add add
+} def
+
+/evaluate3d {
+    aload pop  % x y z A B C D
+    7 1 roll   % D x y z A B C
+    4 3 roll   % D x y A B C z
+    mul        % D x y A B Cz
+    5 1 roll   % D Cz x y A B
+    3 2 roll   % D Cz x A B y
+    mul        % D Cz x A By
+    3 1 roll   % D Cz By x A
+    mul        % D Cz By Ax
+    add add add
+} def
+
+/hodgman-sutherland { 8 dict begin
+/f exch def
+/p exch def
+/n p length def
+f length 3 eq {
+  /evaluate /evaluate2d load def
+}{
+  /evaluate /evaluate3d load def
+} ifelse
+
+% P = p[n-1] to start
+/P p n 1 sub get def
+/d P length 1 sub def
+/fP P aload pop f evaluate def
+[
+  p {
+    /Q exch def
+    /fQ Q aload pop f evaluate def
+    fP 0 le {
+      fQ 0 le {
+        % P & Q both in
+		% (-, -) ==
+        Q
+      }{
+        % P in, Q out: put R on stack
+		% (-, +) ==
+        fP 0 lt {
+          /QP fQ fP sub def
+          [
+            0 1 d { /i exch def
+              fQ P i get mul fP Q i get mul sub QP div
+            } for
+          ]
+        } if
+      } ifelse
+    }{
+      fQ 0 le {
+        % P out, Q in: if fQ< 0 put R Q, otherwise put Q
+		% (+, -) ==
+        fQ 0 lt {
+          /QP fQ fP sub def
+          [
+            0 1 d { /i exch def
+              fQ P i get mul fP Q i get mul sub QP div
+            } for
+          ]
+        } if
+        Q
+      }{
+        % else both out
+		% (+, +) ==
+      } ifelse
+    } ifelse
+    /P Q def
+    /fP fQ def
+  } forall
+]
+end } def
+
+/EJERCICIO6
+{
+    /ancho 12 def
+    /alto 7 def
+
+    aCentimetros
+
+    5 15 translate
+
+    [
+        [0 0]
+        [ancho 0]
+        [ancho alto]
+        [0 alto]
+    ]
+    [-2 1 -3]
+    hodgman-sutherland
+
+    DibujarPoligono
+    stroke
+
+    showpage
+} def
+
+EJERCICIO6
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% EJERCICIO 7                                 %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+/InversaMatriz
+{
+16 dict begin
+    /A exch def
+
+    /a11 A 0 get 0 get def
+    /a12 A 0 get 1 get def
+    /a13 A 0 get 2 get def
+
+    /a21 A 1 get 0 get def
+    /a22 A 1 get 1 get def
+    /a23 A 1 get 2 get def
+
+    /a31 A 2 get 0 get def
+    /a32 A 2 get 1 get def
+    /a33 A 2 get 2 get def
+
+    % Regla de Sarrus
+    /detA
+        a11 a22 a33 mul mul
+        a31 a12 a23 mul mul add
+        a21 a32 a13 mul mul add
+
+        a13 a22 a31 mul mul
+        a12 a21 a33 mul mul add
+        a11 a32 a23 mul mul add
+
+        sub
+    def
+
+    detA 0 ne
+    {
+        % (1/det(A)) · adj(transpuesta(A))
+        [
+            [
+                a22 a33 mul a32 a23 mul sub detA div
+                a12 neg a33 mul a32 a13 mul add detA div
+                a12 a23 mul a22 a13 mul sub detA div
+            ]
+            [
+                a21 neg a33 mul a31 a23 mul add detA div
+                a11 a33 mul a31 a13 mul sub detA div
+                a11 neg a23 mul a21 a13 mul add detA div
+            ]
+            [
+                a21 a32 mul a31 a22 mul sub detA div
+                a11 neg a32 mul a31 a12 mul add detA div
+                a11 a22 mul a21 a12 mul sub detA div
+            ]
+        ]
+    }
+    {
+        (La matriz no es invertible\n) print
+    } ifelse
+end
+} def
+
+/EJERCICIO7
+{
+    [[0 0 2] [4 2 -4] [2 1 2]] InversaMatriz
+    [[1 0 0] [0 1 0] [1 1 1]] InversaMatriz
+    [[1 -1 2] [-2 0 4] [0 -2 7]] InversaMatriz
+
+    pstack
+} def
+
+EJERCICIO7

@@ -1,0 +1,261 @@
+/aCentimetros
+{
+2 dict begin
+    /pulgadas 72 def
+    /centimetros pulgadas 2.54 div def
+    centimetros dup scale
+    1 centimetros div setlinewidth
+end
+} def
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% EJERCICIO 1                                 %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+/linesdict 8 dict def
+
+linesdict begin
+
+    /segment-page
+    {
+    8 dict begin
+        aload pop
+        /C exch def
+        /B exch def
+        /A exch def
+
+        A abs B abs le
+        {
+          /xleft 0 def
+          % Modificado al valor en puntos adobe de un A4
+          /xright 595 def
+          /yleft C A xleft mul add B div neg def
+          % y = -C - Ax / B
+          /yright C A xright mul add B div neg def
+          [xleft yleft]
+          [xright yright]
+        }{
+          /ybottom 0 def
+          % Modificado al valor en puntos adobe de un A4
+          /ytop 842 def
+          /xbottom C B ybottom mul add A div neg def
+          % y = -C - Ax / B
+          /xtop C B ytop mul add A div neg def
+          [xbottom ybottom]
+          [xtop ytop]
+        } ifelse
+    end
+    } def
+
+end
+
+/mkline { 8 dict begin
+  aload pop
+  /C exch def
+  /B exch def
+  /A exch def
+  /T
+    matrix defaultmatrix
+    matrix currentmatrix
+    matrix invertmatrix
+    matrix concatmatrix
+  def
+  [
+	A T 0 get mul
+	B T 1 get mul add
+
+	A T 2 get mul
+	B T 3 get mul add
+
+	T 4 get A mul
+	T 5 get B mul add
+	C add
+  ]
+  linesdict begin
+	segment-page
+  end
+
+  aload pop T transform moveto
+  aload pop T transform lineto
+end } def
+
+/EJERCICIO1
+{
+    2 setlinewidth
+    [7 14 -500] mkline
+    stroke
+
+    aCentimetros
+    0.05 setlinewidth
+
+    % Traslación del origen a (5, 0)
+    5 10 translate
+
+    % Ejes X e Y en negro
+    [1 0 0] mkline
+    [0 1 0] mkline
+    stroke
+
+    % x + y - 10 = 0 en rojo
+    1 0 0 setrgbcolor
+    [1 1 -10] mkline
+    stroke
+
+    % x = y en azul
+    0 0 1 setrgbcolor
+    [1 -1 0] mkline
+    stroke
+
+    % -5x + 2y = 10 en verde
+    0 1 0 setrgbcolor
+    [-5 2 -10] mkline
+    stroke
+
+    % x + 2y = 1 en otro color (amarillo)
+    1 1 0 setrgbcolor
+    [1 2 -1] mkline
+    stroke
+
+    showpage
+
+} def
+
+EJERCICIO1
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% EJERCICIO 2                                 %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+/calcularPuntos
+{
+    /C exch def
+    /B exch def
+    /A exch def
+    /Q exch def
+    /P exch def
+
+    /fP
+        A P 0 get mul
+        B P 1 get mul
+        add C add
+    def
+
+    /fQ
+        A Q 0 get mul
+        B Q 1 get mul
+        add C add
+    def
+
+    /PQ fP fQ mul def
+
+    PQ 0 lt
+    {
+        % Se devuelven dos puntos
+        /t fP fP fQ sub div def
+
+        [
+            1 t sub P 0 get mul
+            t Q 0 get mul
+            add
+
+            1 t sub P 1 get mul
+            t Q 1 get mul
+            add
+        ]
+    }
+    {
+        fQ 0 eq
+        {
+            % Se devuelve un punto
+            Q
+        } if
+    } ifelse
+} def
+
+/puntosInterseccion
+{
+16 dict begin
+    /Funcion exch def
+    /ESD exch def
+    /EII exch def
+
+    /pP [EII 0 get EII 1 get] def
+    /pQ [EII 0 get ESD 1 get] def
+    /pR [ESD 0 get ESD 1 get] def
+    /pS [ESD 0 get EII 1 get] def
+
+    /A Funcion 0 get def
+    /B Funcion 1 get def
+    /C Funcion 2 get def
+
+    pP 0 get pP 1 get moveto
+    pQ 0 get pQ 1 get lineto
+    pR 0 get pR 1 get lineto
+    pS 0 get pS 1 get lineto
+
+    closepath
+
+    [
+        pP pQ A B C calcularPuntos
+        pQ pR A B C calcularPuntos
+        pR pS A B C calcularPuntos
+        pS pP A B C calcularPuntos
+    ]
+end
+} def
+
+/mkline
+{
+8 dict begin
+    /recta exch def
+    /EsquinaSupDer exch def
+    /EsquinaInfIzq exch def
+
+    /resultado
+        EsquinaInfIzq EsquinaSupDer recta
+        puntosInterseccion
+    def
+
+    resultado length 2 eq
+    {
+        resultado 0 get 0 get
+        resultado 0 get 1 get
+        moveto
+
+        resultado 1 get 0 get
+        resultado 1 get 1 get
+        lineto
+    }if
+end
+}def
+
+/EJERCICIO2
+{
+    /ejemplos
+    [
+        [[3 3] [10 10] [2 1 -15]]
+        [[3 3] [10 10] [2 1 -20]]
+        [[3 3] [10 10] [2 1 -23]]
+        [[0 0] [21 30] [2 1 -25]]
+        [[3 3] [10 10] [2 1 -30]]
+        [[3 3] [10 10] [2 1 -35]]
+    ] def
+
+    ejemplos
+    {
+        /pars exch def
+
+        aCentimetros
+
+        pars 0 get
+        pars 1 get
+        pars 2 get
+        mkline
+
+        stroke
+        showpage
+    } forall
+
+} def
+
+EJERCICIO2
